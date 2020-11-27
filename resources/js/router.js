@@ -21,8 +21,12 @@ let routes = [
         component: require('./components/Task').default
     },
     {
-        path:'/Task/create',
+        path:'/Task/create/:id',
         component: require('./components/CreateTask').default
+    },
+    {
+        path:'/Users',
+        component: require('./components/Users').default
     },
     {
         path:'*',

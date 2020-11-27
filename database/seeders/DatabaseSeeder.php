@@ -19,8 +19,26 @@ class DatabaseSeeder extends Seeder
         User::create([
             'username' => '管理員',
             'account' => 'admin',
-            'permission' => '管理員',
-            'password' => Hash::make('1234')
+            'password' => Hash::make('1234'),
+            'permission' => '管理員'
+        ]);
+
+        User::create([
+            'username' => '測試員1號',
+            'account' => 'test1',
+            'password' => Hash::make('1234'),
+        ]);
+
+        User::create([
+            'username' => '測試員2號',
+            'account' => 'test2',
+            'password' => Hash::make('1234'),
+        ]);
+
+        User::create([
+            'username' => '測試員3號',
+            'account' => 'test3',
+            'password' => Hash::make('1234'),
         ]);
     }
 }

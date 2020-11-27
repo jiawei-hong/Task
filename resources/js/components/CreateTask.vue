@@ -71,7 +71,7 @@
                     msgConfig.text = '開始時間不能超過結束時間。';
                 } else {
                     let data = await createTask(Object.assign({
-                        'user_id': this.$store.getters.getUser.id
+                        'user_id': this.$route.params.id
                     },this.$data));
 
                     msgConfig.icon = 'success';

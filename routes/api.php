@@ -32,4 +32,9 @@ Route::namespace('api')->group(function(){
            Route::delete('{id}',[ApiController::class,'deleteTask']);
        });
    });
+
+   Route::prefix('admin')->group(function(){
+        Route::get('getUsers',[ApiController::class,'getUsers']);
+        Route::get('getTasks',[ApiController::class,'getTasks']);
+   });
 });

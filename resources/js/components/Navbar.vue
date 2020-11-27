@@ -25,6 +25,7 @@
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                         <div>
+                            <router-link to="/Users" class="nav-link">Users</router-link>
                             <router-link to="/Task" class="nav-link">Task</router-link>
                         </div>
 

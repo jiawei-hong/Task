@@ -17,6 +17,7 @@ class CreateTasksTable extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->string('content');
+            $table->string('status')->default('created');
             $table->date('start_time');
             $table->date('end_time');
             $table->bigInteger('user_id')->unsigned()->index();

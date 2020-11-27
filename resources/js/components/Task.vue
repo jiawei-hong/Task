@@ -1,22 +1,34 @@
 <template>
     <div class="text-center">
-        <router-link class="btn btn-primary btn-block" to="Task/create">新增任務</router-link>
-
         <div class="card">
             <div class="card-header">
                 任務管理主頁
             </div>
 
             <div class="card-body">
-                <div class="row" v-if="taskCount !== 0">
-                    <div class="col">
-
-                    </div>
-                </div>
-
-                <div v-else>
-                    目前沒有任何的任務事項
-                </div>
+                <table class="table table-striped border" v-if="taskCount !== 0">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">標題</th>
+                            <th scope="col">內容</th>
+                            <th scope="col">狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(task,index) in tasks">
+                            <th scope="row">{{ index + 1}}</th>
+                            <td>{{ task.title }}</td>
+                            <td>{{ task.content }}</td>
+                            <td>
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="8" cy="8" r="8"/>
+                                </svg>
+                                {{ task.status }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -25,13 +37,16 @@
 
 <script>
     export default {
+        mounted() {
+            this.$store.dispatch('getTasks');
+        },
         computed:{
-            taskCount(){
-                return 0;
+            tasks(){
+                return this.$store.getters.getTasks;
             },
-            task(){
-                return 0;
-            }
+            taskCount(){
+                return this.$store.getters.getTasks.length;
+            },
         }
     }
 </script>

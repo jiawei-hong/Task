@@ -48,9 +48,36 @@ class ApiController extends Controller
         ]);
     }
 
-    public function getAllTask()
+    public function getUserId($token)
     {
+        return User::where('api_token',$token)->first()->id;
+    }
 
+    public function getUsers()
+    {
+        return response()->json([
+            'msg' => '取得會員',
+            'data' => User::where('permission','!=','管理員')->get()
+        ]);
+    }
+
+    public function getAllTask(Request $request)
+    {
+        $userId = $this->getUserId($request->input('token'));
+        $task = Task::where('user_id',$userId)->get();
+
+        return response()->json([
+            'msg' => '查詢完成。',
+            'data' => $task
+        ]);
+    }
+
+    public function getTasks()
+    {
+        return response()->json([
+            'msg' => 'Get All Member Task!',
+            'data' => Task::all()
+        ]);
     }
 
     public function getTask($id)

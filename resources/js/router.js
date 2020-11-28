@@ -25,6 +25,10 @@ let routes = [
         component: require('./components/CreateTask').default
     },
     {
+        path:'/Task/edit/:id',
+        component: require('./components/editTask').default
+    },
+    {
         path:'/Users',
         component: require('./components/Users').default
     },

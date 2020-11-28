@@ -82,7 +82,10 @@ class ApiController extends Controller
 
     public function getTask($id)
     {
-
+        return response()->json([
+            'msg' => 'Get Task Edit Data',
+            'data' => Task::find($id)->select('title','content','status')->first()
+        ]);
     }
 
     public function createTask(Request $request)
@@ -93,6 +96,22 @@ class ApiController extends Controller
             'status' => true,
             'msg' => '任務創建成功。',
             'id' => $task->id
+        ]);
+    }
+
+    public function editTask($id,Request $request){
+        $task = Task::find($id)->update($request->all());
+
+        return response()->json([
+           'msg' => '修改成功'
+        ]);
+    }
+
+    public function deleteTask($id){
+        Task::find($id)->delete();
+
+        return response()->json([
+            'msg' => '刪除成功'
         ]);
     }
 }

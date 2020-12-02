@@ -21,14 +21,16 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown" v-if="userItemCount !== 0">
                     <span id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">管理員</span>
+                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ user.username }}
+                    </span>
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <div>
+                        <div v-if="user.permission === '管理員'">
                             <router-link to="/Users" class="nav-link">Users</router-link>
-                            <router-link to="/Task" class="nav-link">Task</router-link>
                         </div>
 
+                        <router-link to="/Task" class="nav-link">Task</router-link>
                         <router-link to="/Logout" class="nav-link">Logout</router-link>
                     </div>
                 </li>

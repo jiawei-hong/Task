@@ -33,6 +33,14 @@ let routes = [
         component: require('./components/Users').default
     },
     {
+        path: '/User/edit/:id',
+        component: require('./components/EditUser').default
+    },
+    {
+        path:'/createUser',
+        component: require('./components/CreateUser').default
+    },
+    {
         path:'*',
         redirect:'/'
     }

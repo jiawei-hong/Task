@@ -8,14 +8,14 @@
                     <label class="input-group-prepend" for="title">
                         <div class="input-group-text">標題</div>
                     </label>
-                    <input type="text" class="form-control" v-model="title" id="title" placeholder="請輸入任務標題" autofocus>
+                    <input type="text" class="form-control" v-model="task_title" id="title" placeholder="請輸入任務標題" autofocus>
                 </div>
 
                 <div class="input-group">
                     <label class="input-group-prepend" for="content">
                         <div class="input-group-text">內容</div>
                     </label>
-                    <input type="text" class="form-control" v-model="content" id="content" placeholder="請輸入任務標題">
+                    <input type="text" class="form-control" v-model="task_content" id="content" placeholder="請輸入任務標題">
                 </div>
 
                 <div class="input-group">
@@ -23,10 +23,10 @@
                         <div class="input-group-text">狀態</div>
                     </label>
 
-                    <select class="form-control" v-model="status" id="status">
+                    <select class="form-control" v-model="task_status" id="status">
                         <option value="created">created</option>
                         <option value="running">runnig</option>
-                        <option value="accepted">accepted</option>
+                        <option value="closed">closed</option>
                     </select>
                 </div>
 
@@ -39,33 +39,44 @@
 </template>
 
 <script>
-    import {editTask} from "../api";
+import {getTask, updateTask} from "../api";
     import {toastMsg} from "../swal";
 
     export default {
         data(){
             return {
-                title:'',
-                content:'',
-                status:'',
+                task_title:'',
+                task_content:'',
+                task_status:'',
             }
         },
-        mounted() {
+        async mounted() {
             let id = this.$route.params.id;
+            let result = await getTask(id);
 
-            this.$store.dispatch('getEditTask', id);
-        },
-        created() {
-            let editTask = this.$store.getters.getEditTask;
+            if(!result.status){
+                await toastMsg({
+                    icon: 'error',
+                    text: '此任務已經關閉'
+                });
+                await this.$router.push('/Task');
+            }else{
+                await this.$store.dispatch('getEditTask',result.data);
+                let editTask = this.$store.getters.getEditTask;
 
-            for(let key in editTask){
-                this.$data[key] = editTask[key];
+                for(let key in editTask){
+                    this.$data[key] = editTask[key];
+                }
             }
         },
         methods:{
             async editTaskProcess(){
                 let id = this.$route.params.id;
-                let result = await editTask(id,this.$data);
+                let result = await updateTask(id,{
+                    title: this.$data.task_title,
+                    content: this.$data.task_content,
+                    status:　this.$data.task_status
+                });
 
                 await toastMsg({
                     icon: 'success',

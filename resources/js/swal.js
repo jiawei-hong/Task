@@ -8,10 +8,18 @@ const Toast = Swal.mixin({
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer)
-        toast.addEventListener('mouseleave', Swal.resumeTimer)
-    }
 })
 
+const deleteConfirm = text => Swal.fire({
+    title: '確定要刪除嗎?',
+    icon: 'warning',
+    text: text,
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: '刪除',
+    cancelButtonText: '取消'
+}).then(res => res.value);
+
 export const toastMsg = config => Toast.fire(config);
+export const deleteMsg = text => deleteConfirm(text);

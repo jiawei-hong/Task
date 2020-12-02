@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
-import {getUsers, getTasks,getTask} from "./api";
+import {getTasks, getUsers} from "./api";
 
 Vue.use(Vuex);
 
@@ -31,23 +31,21 @@ export default new Vuex.Store({
         logout: state => Object.assign(state,stateConfig),
     },
     actions:{
-        setUser({commit},payload){
-            commit('setUser',payload)
-        },
-        async setUsers({commit}){
+        async getUsers({commit}){
             let result = await getUsers();
 
-            commit('setUsers',result.data);
+            commit('setUsers',result.data)
         },
-        async getTasks({commit}){
-            let result = await getTasks();
+        setUser({commit},payload){
+            commit('setUser',payload);
+        },
+        async getTasks({commit},token){
+            let result = await getTasks(token);
 
             commit('setTasks',result.data);
         },
-        async getEditTask({commit},id){
-            let result = await getTask(id);
-
-            commit('setEditTask',result.data);
+        getEditTask({commit},payload){
+            commit('setEditTask',payload);
         }
     }
 });

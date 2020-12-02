@@ -19,7 +19,12 @@ class ApiController extends Controller
             return response()->json([
                 'status' => true,
                 'msg' => '登入成功',
-                'data' => $query->select('id','username','api_token')->first(),
+                'data' => [
+                    'id' => $query->id,
+                    'username' => $query->username,
+                    'api_token' => $query->api_token,
+                    'permission' => $query->permission
+                ]
             ]);
         }
 
@@ -53,38 +58,47 @@ class ApiController extends Controller
         return User::where('api_token',$token)->first()->id;
     }
 
-    public function getUsers()
-    {
-        return response()->json([
-            'msg' => '取得會員',
-            'data' => User::where('permission','!=','管理員')->get()
-        ]);
+    public function getUserPermission($token){
+        return User::where('api_token',$token)->first()->permission;
     }
 
-    public function getAllTask(Request $request)
+    public function getTasks(Request $request)
     {
         $userId = $this->getUserId($request->input('token'));
-        $task = Task::where('user_id',$userId)->get();
+        $permission = $this->getUserPermission($request->input('token'));
+
+        if($permission === '管理員'){
+            return response()->json([
+                'msg' => 'Get All Member Task!',
+                'data' => Task::all()
+            ]);
+        }
 
         return response()->json([
-            'msg' => '查詢完成。',
-            'data' => $task
-        ]);
-    }
-
-    public function getTasks()
-    {
-        return response()->json([
-            'msg' => 'Get All Member Task!',
-            'data' => Task::all()
+            'msg' => 'Get Member Task!',
+            'data' => Task::where('user_id',$userId)->get()
         ]);
     }
 
     public function getTask($id)
     {
+        $query = Task::where('id',$id)->select('title','content','status')->first();
+
+        if($query->status === 'closed'){
+            return response()->json([
+                'status' => false,
+                'msg' => '此任務已關閉'
+            ]);
+        }
+
         return response()->json([
+            'status' => true,
             'msg' => 'Get Task Edit Data',
-            'data' => Task::find($id)->select('title','content','status')->first()
+            'data' => [
+                'task_title' => $query->title,
+                'task_content' => $query->content,
+                'task_status' => $query->status
+            ]
         ]);
     }
 
@@ -99,11 +113,11 @@ class ApiController extends Controller
         ]);
     }
 
-    public function editTask($id,Request $request){
-        $task = Task::find($id)->update($request->all());
+    public function updateTask($id,Request $request){
+        Task::find($id)->update($request->all());
 
         return response()->json([
-           'msg' => '修改成功'
+            'msg' => '修改成功'
         ]);
     }
 
@@ -112,6 +126,45 @@ class ApiController extends Controller
 
         return response()->json([
             'msg' => '刪除成功'
+        ]);
+    }
+
+    public function getUsers()
+    {
+        return response()->json([
+            'msg' => 'Get All Member',
+            'data' => User::where('permission','!=','管理員')->get()
+        ]);
+    }
+
+    public function createUser(Request $request)
+    {
+        $user = User::create($request->all());
+
+        return response()->json([
+            'msg' => '創建成功',
+            'data' => $user->id
+        ]);
+    }
+
+    public function updateUser($id,Request $request)
+    {
+        User::find($id)->update([
+            'username' => $request->input('username'),
+            'password' => Hash::make($request->input('password'))
+        ]);
+
+        return response()->json([
+            'msg' => '修改成功',
+        ]);
+    }
+
+    public function deleteUser($id)
+    {
+        User::find($id)->delete();
+
+        return response()->json([
+            'msg' => '刪除成功',
         ]);
     }
 }

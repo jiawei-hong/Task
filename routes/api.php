@@ -20,21 +20,22 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::namespace('api')->group(function(){
-   Route::post('login',[ApiController::class,'login']);
-   Route::post('logout',[ApiController::class,'logout']);
-
-   Route::prefix('users')->group(function(){
-       Route::prefix('task')->group(function(){
-           Route::get('',[ApiController::class,'getAllTask']);
-           Route::get('/{id}',[ApiController::class,'getTask']);
-           Route::post('/',[ApiController::class,'createTask']);
-       });
+   Route::prefix('task')->group(function(){
+       Route::get('',[ApiController::class,'getTasks']);
+       Route::get('{id}',[ApiController::class,'getTask']);
+       Route::post('',[ApiController::class,'createTask']);
+       Route::patch('{id}',[ApiController::class,'updateTask']);
+       Route::delete('{id}',[ApiController::class,'deleteTask']);
    });
 
-   Route::prefix('admin')->group(function(){
-        Route::get('getUsers',[ApiController::class,'getUsers']);
-        Route::get('getTasks',[ApiController::class,'getTasks']);
-        Route::patch('task/{id}',[ApiController::class,'editTask']);
-        Route::delete('task/{id}',[ApiController::class,'deleteTask']);
+   Route::prefix('user')->group(function(){
+       Route::get('',[ApiController::class,'getUsers']);
+       Route::get('{id}',[ApiController::class,'getUser']);
+       Route::post('',[ApiController::class,'createUser']);
+       Route::patch('{id}',[ApiController::class,'updateUser']);
+       Route::delete('{id}',[ApiController::class,'deleteUser']);
    });
+
+    Route::post('login',[ApiController::class,'login']);
+    Route::post('logout',[ApiController::class,'logout']);
 });

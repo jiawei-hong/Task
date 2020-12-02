@@ -28,8 +28,14 @@
                                 {{ task.status }}
                             </td>
                             <td>
-                                <router-link class="btn btn-warning" :to="'Task/edit/' + task.id">更新</router-link>
-                                <button class="btn btn-danger" @click="deleteTaskWithId(task.id)">刪除</button>
+                                <div v-if="task.status !== 'closed'">
+                                    <router-link class="btn btn-warning" :to="'Task/edit/' + task.id">更新</router-link>
+                                    <button v-if="userPermission === '管理員'" class="btn btn-danger" @click="deleteTaskWithId(task.id)">刪除</button>
+                                </div>
+
+                                <div v-else>
+                                    此任務已關閉
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -41,31 +47,40 @@
 </template>
 
 <script>
-    import {deleteTask} from "../api";
-    import {toastMsg} from "../swal";
+    import {getTasks,deleteTask} from "../api";
+    import {toastMsg,deleteMsg} from "../swal";
 
     export default {
-        mounted() {
-            this.$store.dispatch('getTasks');
+        async mounted() {
+            let token = this.getToken();
+
+            await this.$store.dispatch('getTasks',token);
         },
         methods:{
+            getToken(){
+              return this.$store.getters.getUser.api_token;
+            },
             getStatusColor(status){
                 let status_obj = {
                     created:'var(--info)',
-                    running:'var(--indigo)',
-                    accepted:'var(--success)'
+                    running:'var(--success)',
+                    closed:'var(--danger)'
                 };
 
                 return status_obj[status];
             },
             async deleteTaskWithId(id){
-                let result = await deleteTask(id);
+                let isDeleteTask = await deleteMsg('刪除此任務');
 
-                await toastMsg({
-                    icon: 'success',
-                    text: result.msg
-                });
-                await this.$store.dispatch('getTasks');
+                if(isDeleteTask){
+                    let result = await deleteTask(id);
+
+                    await toastMsg({
+                        icon: 'success',
+                        text: result.msg
+                    });
+                    await this.$store.dispatch('getTasks',this.getToken());
+                }
             }
         },
         computed:{
@@ -75,6 +90,9 @@
             taskCount(){
                 return this.$store.getters.getTasks.length;
             },
+            userPermission(){
+                return this.$store.getters.getUser.permission;
+            }
         }
     }
 </script>

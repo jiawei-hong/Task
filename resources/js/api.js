@@ -1,29 +1,26 @@
 import Axios from 'axios';
 
-let baseRequest = Axios.create({
-    baseURL:'/api/',
-});
+let basicRequest = Axios.create({
+    baseURL: '/api/'
+})
+
+let taskRequest = Axios.create({
+    baseURL: '/api/task/'
+})
 
 let userRequest = Axios.create({
-    baseURL:'/api/users/',
-});
+    baseURL: '/api/user/'
+})
 
-let adminRequest = Axios.create({
-    baseURL: '/api/admin/',
-});
-
-//baseRequest
-export const login = data => baseRequest.post('login',data).then(res => res.data);
-export const logout = data => baseRequest.post('logout',data).then(res => res.data);
-
-//userRequest
-export const createTask = data => userRequest.post('task',data).then(res => res.data);
-export const getAllTask = token => userRequest.get('task',{params:{token:token}}).then(res => res.data);
-export const getTask = id => userRequest.get(`task/${id}`).then(res => res.data);
-
-
-//adminRequest
-export const getUsers = () => adminRequest.get('getUsers').then(res => res.data);
-export const getTasks = () => adminRequest.get('getTasks').then(res => res.data);
-export const editTask = (id,data) => adminRequest.patch(`task/${id}`,data).then(res => res.data);
-export const deleteTask = id => adminRequest.delete(`task/${id}`).then(res => res.data);
+export const login = data => basicRequest.post('login',data).then(res => res.data);
+export const logout = data => basicRequest.post('logout',data).then(res => res.data);
+export const getTasks = token => taskRequest.get('',{params:{token:token}}).then(res => res.data);
+export const getTask = id => taskRequest.get(`${id}`).then(res => res.data);
+export const createTask = data => taskRequest.post('',data).then(res => res.data);
+export const updateTask = (id,data) => taskRequest.patch(`${id}`,data).then(res => res.data);
+export const deleteTask = id => taskRequest.delete(`${id}`).then(res => res.data)
+export const getUsers = () => userRequest.get('').then(res => res.data);
+export const getUser = id => userRequest.get(`${id}`).then(res => res.data);
+export const createUser = data => userRequest.post('',data).then(res => res.data);
+export const updateUser = (id,data) => userRequest.patch(`${id}`,data).then(res => res.data);
+export const deleteUser = id => userRequest.delete(`${id}`).then(res => res.data);

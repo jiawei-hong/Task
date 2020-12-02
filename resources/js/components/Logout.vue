@@ -13,13 +13,13 @@
                 token:token
             });
 
-            toastMsg({
+            await toastMsg({
                 'icon': feat.status ? 'success' : 'error',
                 'text': feat.msg
-            }).then(async () => {
-                await this.$store.commit('logout');
-                await this.$router.push('/')
             });
+
+            await this.$store.commit('logout');
+            await this.$router.push('/')
         }
     }
 </script>
